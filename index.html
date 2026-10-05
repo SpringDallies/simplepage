@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Testing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style_sheet.css">
+</head>
+<body>
+    <div id="container">
+        <div id="settings">
+            <button id="settings-btn">settings</button>
+            <div id="window" hidden>
+                <div class="toggle">
+                    <label for="opt-icons">Show icons</label>
+                    <input type="checkbox" class="toggle-favicons" id="opt-icons" data-setting="icons">
+                </div>
+                <div class="toggle">
+                    <label for="opt-row">Horizontal layout</label>
+                    <input type="checkbox" class="toggle-favicons" id="opt-row" data-setting="row">
+                </div>
+                <div class="toggle">
+                    <span>Text align</span>
+                    <div class="segmented">
+                        <button data-key="align" data-value="left">left</button>
+                        <button data-key="align" data-value="center">center</button>
+                        <button data-key="align" data-value="right">right</button>
+                    </div>
+                </div>
+                <div class="toggle">
+                    <span>Icon align</span>
+                    <div class="segmented">
+                        <button data-key="iconAlign" data-value="text">with text</button>
+                        <button data-key="iconAlign" data-value="left">left</button>
+                        <button data-key="iconAlign" data-value="right">right</button>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="toggle">
+                    <label for="opt-edit">Edit links (show ×)</label>
+                    <input type="checkbox" class="toggle-favicons" id="opt-edit">
+                </div>
+                <form id="add-form" class="add-form" autocomplete="off">
+                    <input type="text" name="name" placeholder="Name (optional)">
+                    <input type="text" name="url" placeholder="example.com" inputmode="url" required>
+                    <div class="segmented">
+                        <button type="submit">add site</button>
+                        <button type="button" id="reset-sites">reset links</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="link-container"></div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

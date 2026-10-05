@@ -1,0 +1,277 @@
+:root {
+    --background: rgb(42, 42, 42);
+    --dark-accent: rgb(67, 67, 67);
+    --accent: rgb(97, 97, 97);
+    --light-accent: rgb(148, 148, 148);
+    --highlight: rgb(209, 209, 209);
+    --text: rgb(224, 224, 224);
+    --white: rgb(255, 255, 255);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background-color: var(--background);
+}
+
+body {
+    color: aliceblue;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 0;
+    margin: 0;
+}
+
+body::selection {
+    background: var(--white);
+    color: white;
+}
+
+/* ---------- layout ---------- */
+#container {
+    transition: padding-right 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#link-container {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+
+/* ---------- links ---------- */
+.link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.link a {
+    flex: 1;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 3px;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.link a:hover {
+    text-decoration: underline;
+}
+
+.link img {
+    flex: none;
+    margin-right: 10px;
+    margin-top: -2px;
+}
+
+/* text sits in its own span so it can be aligned separately from the icon */
+.label {
+    flex: 0 1 auto;
+}
+
+/* ---------- settings button + window ---------- */
+button {
+    background: none;
+    color: var(--text);
+    font-family: "JetBrains Mono", monospace;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 2px;
+}
+
+#settings {
+    position: fixed;
+    top: 2vh;
+    right: 2vw;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#window {
+    border: 1px solid var(--highlight);
+    gap: 10px;
+    flex-direction: column;
+    display: flex;
+    background-color: var(--dark-accent);
+    width: 340px;
+    max-width: 96vw;
+    height: fit-content;
+    padding: 32px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: fixed;
+    top: 8vh;
+    right: 2vw;
+    justify-content: center;
+    align-items: center;
+}
+
+/* the `hidden` attribute loses to `display:flex`, so force it */
+#window[hidden] {
+    display: none;
+}
+
+.toggle {
+    text-align: center;
+    height: fit-content;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: fit-content;
+    justify-content: center;
+}
+
+/* ---------- checkbox ---------- */
+.toggle-favicons {
+    appearance: none;
+    -webkit-appearance: none;
+    display: grid;
+    place-content: center;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    background: var(--background);
+    border: 2px solid var(--light-accent);
+    cursor: pointer;
+    position: relative;
+    bottom: 2px;
+    transition: border-color 0.15s;
+}
+
+/* the inner square that "fills in" when checked */
+.toggle-favicons::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: var(--highlight);
+    transform: scale(0);
+    transition: transform 0.12s ease-out;
+}
+
+.toggle-favicons:checked::before { transform: scale(1); }
+.toggle-favicons:hover { border-color: var(--highlight); }
+
+.toggle-favicons:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 2px;
+}
+
+/* ---------- segmented buttons ---------- */
+.segmented {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+
+.segmented button {
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    border: 2px solid var(--light-accent);
+    transition: border-color 0.15s;
+}
+
+.segmented button:hover { border-color: var(--highlight); }
+
+.segmented button.active {
+    background: var(--light-accent);
+    color: var(--background);
+}
+
+/* ---------- driven by the settings ---------- */
+html[data-icons="false"] .link img { display: none; }
+
+html[data-row="true"] #link-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 28px;
+}
+
+/* "with text" mode: the icon + label move together */
+html[data-align="left"]   .link a { justify-content: flex-start; }
+html[data-align="center"] .link a { justify-content: center; }
+html[data-align="right"]  .link a { justify-content: flex-end; }
+
+/* icon pinned to an edge: the label fills the rest of the row */
+html[data-icon-align="left"] .label,
+html[data-icon-align="right"] .label {
+    flex: 1;
+}
+
+html[data-icon-align="right"] .link img {
+    order: 1;
+    margin: -2px 0 0 10px;
+}
+
+/* text alignment inside the label (visible when the label is stretched) */
+html[data-align="left"]   .label { text-align: left; }
+html[data-align="center"] .label { text-align: center; }
+html[data-align="right"]  .label { text-align: right; }
+
+/* ---------- add / remove sites ---------- */
+#window hr {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid var(--accent);
+    margin: 4px 0;
+}
+
+.remove {
+    display: none;
+    flex: none;
+    padding: 0 6px;
+    font-size: 1.2rem;
+    line-height: 1;
+    color: var(--light-accent);
+    transition: color 0.15s;
+}
+
+.remove:hover { color: rgb(255, 90, 90); }
+
+html[data-editing="true"] .remove { display: block; }
+
+.add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.add-form input[type="text"] {
+    background: var(--background);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border: 2px solid var(--light-accent);
+    border-radius: 0;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.add-form input[type="text"]:focus { border-color: var(--white); }
+.add-form input[type="text"].invalid { border-color: rgb(255, 90, 90); }
+
+/* horizontal layout: make room so the links never sit under the open settings window */
+html[data-row="true"][data-menu="open"] #container {
+    padding-right: calc(340px + 2vw + 24px);
+}
+
+@media (max-width: 800px) {
+    html[data-row="true"][data-menu="open"] #container { padding-right: 0; }
+}
