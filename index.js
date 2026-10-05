@@ -1,5 +1,5 @@
-// ---------- favicons ----------
-const PREFIX = "icon-v5:";
+    // ---------- favicons ----------
+    const PREFIX = "icon-v5:";
 
     // Load any image URL and return it as a small PNG data URL (null on failure)
     const toDataURL = url => new Promise(resolve => {
@@ -46,23 +46,32 @@ const PREFIX = "icon-v5:";
     const pending = {}; // one lookup per site, even if several links share it
 
     function addFavicon(a) {
-    const origin = new URL(a.href).origin;
+    const { origin, hostname } = new URL(a.href);
+    const override = a.dataset.icon;           // manual icon URL, if the site has one
+    const key = PREFIX + (override || origin);
+
     const add = src => {
         const img = new Image(20, 20);
+        img.referrerPolicy = "no-referrer";      // stops hotlink protection blocking the icon
         img.src = src;
         a.prepend(img);
     };
 
-    if (a.dataset.icon) return add(a.dataset.icon);
-
-    const cached = localStorage.getItem(PREFIX + origin);
+    const cached = localStorage.getItem(key);
     if (cached) return add(cached);
 
-    pending[origin] ??= findIcon(a.href).then(icon => {
-        if (icon) localStorage.setItem(PREFIX + origin, icon);
+    pending[key] ??= (override
+        ? toDataURL(override).then(d => d || findIcon(a.href))
+        : findIcon(a.href)
+    ).then(icon => {
+        if (icon) localStorage.setItem(key, icon);
         return icon;
     });
-    pending[origin].then(icon => icon && add(icon));
+
+    // if nothing could be converted to cached data, still show a plain image (not cached)
+    pending[key].then(icon =>
+        add(icon || override || `https://icons.duckduckgo.com/ip3/${hostname}.ico`)
+    );
     }
 
     // ---------- sites (add / remove) ----------
@@ -146,7 +155,11 @@ const PREFIX = "icon-v5:";
     const origin = new URL(removed.url).origin;
     if (!sites.some(s => new URL(s.url).origin === origin)) {
         localStorage.removeItem(PREFIX + origin);
-        delete pending[origin];
+        delete pending[PREFIX + origin];
+    }
+    if (removed.icon) {
+        localStorage.removeItem(PREFIX + removed.icon);
+        delete pending[PREFIX + removed.icon];
     }
     renderLinks();
     });
